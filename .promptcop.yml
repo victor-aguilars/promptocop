@@ -1,0 +1,19 @@
+extends:
+  - promptcop:recommended
+
+rules:
+  no-vague-verb: error
+  no-ambiguous-pronoun: error
+  missing-success-criteria: error
+  no-file-context: warn
+  no-constraints: warn
+  multi-task: error
+  context-dump-risk: warn
+  prefer-example: info
+
+# Uncomment to add project-specific vague verbs:
+# options:
+#   no-vague-verb:
+#     additionalVerbs:
+#       - "touch"
+#       - "revisit"

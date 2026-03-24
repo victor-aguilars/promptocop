@@ -1,0 +1,48 @@
+{
+  "name": "promptcop",
+  "version": "0.1.0",
+  "description": "A prompt linter for Claude Code — catches bad prompt patterns before they reach the model",
+  "type": "module",
+  "bin": {
+    "promptcop": "dist/cli.js"
+  },
+  "main": "dist/linter.js",
+  "exports": {
+    ".": "./dist/linter.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "prompt",
+    "linter",
+    "claude",
+    "claude-code",
+    "ai"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "js-yaml": "^4.1.0",
+    "ora": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

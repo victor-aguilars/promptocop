@@ -1,0 +1,18 @@
+<svg width="480" height="120" viewBox="0 0 480 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @import url('https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono/700.css');
+      .wm { font-family: 'JetBrains Mono', 'Courier New', monospace; font-weight: 700; fill: #1A0E0A; dominant-baseline: middle; }
+      .tl { font-family: 'JetBrains Mono', 'Courier New', monospace; font-weight: 700; fill: #C0533A; dominant-baseline: middle; letter-spacing: 0.2em; }
+    </style>
+  </defs>
+  <!-- Outer diamond -->
+  <polygon points="60,6 108,60 60,114 12,60" fill="#C0533A"/>
+  <!-- Inner diamond -->
+  <polygon points="60,24 84,60 60,96 36,60" fill="#F5ECD7"/>
+  <!-- Horizontal cut -->
+  <line x1="12" y1="60" x2="108" y2="60" stroke="#F5ECD7" stroke-width="1.5"/>
+  <!-- Wordmark -->
+  <text class="wm" x="126" y="52" style="font-size:36px;">promptcop</text>
+  <text class="tl" x="128" y="84" style="font-size:9px;">LINT YOUR PROMPTS</text>
+</svg>
