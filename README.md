@@ -5,7 +5,7 @@
   </picture>
 </div>
 
-A prompt linter for Claude Code. Catches bad prompt patterns before they reach the model — like ESLint, but for the things you type.
+A prompt linter for Claude Code. Analyzes your prompts for anti-patterns and surfaces issues as context for the model — like ESLint, but for the things you type.
 
 ---
 
@@ -46,16 +46,6 @@ May reduce response quality (mention if relevant):
 | `error` | Ask the user to clarify if not already clear from conversation |
 | `warn` | Mention gaps if relevant to the response |
 | `info` | Suggest improvements the user could consider |
-
-### Strict mode
-
-To block prompts that have errors instead of injecting context, add to `.promptocop.yml`:
-
-```yaml
-strict: true
-```
-
-Warnings remain non-blocking even in strict mode.
 
 ---
 

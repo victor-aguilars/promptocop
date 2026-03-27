@@ -23,9 +23,8 @@ program
   .description('Lint a prompt string (use - to read from stdin)')
   .option('--fix', 'Apply auto-fixes and show rewritten prompt')
   .option('--format <mode>', 'Output format: default, json, compact', 'default')
-  .option('--hook', 'Hook mode: lint results injected as context (non-blocking by default)')
-  .option('--strict', 'Strict hook mode: block prompts with errors (requires --hook)')
-  .action(async (promptArg: string | undefined, options: { fix: boolean; format: string; hook: boolean; strict: boolean }) => {
+  .option('--hook', 'Hook mode: lint results injected as context (non-blocking)')
+  .action(async (promptArg: string | undefined, options: { fix: boolean; format: string; hook: boolean }) => {
     let prompt: string;
 
     if (promptArg === '-' || promptArg === undefined) {
@@ -48,8 +47,14 @@ program
       process.exit(0);
     }
 
-    const formatMode: FormatMode = options.hook ? 'compact' : (options.format as FormatMode);
     const config = loadConfig();
+
+    if (config.enabled === false) {
+      if (options.hook) hookLog('disabled via config');
+      process.exit(0);
+    }
+
+    const formatMode: FormatMode = options.hook ? 'compact' : (options.format as FormatMode);
 
     if (options.hook) hookLog(`linting prompt (${prompt.length} chars)`);
     const results = lint(prompt, config);
@@ -64,7 +69,7 @@ program
       }
       const fixedResults = lint(fixed, config);
       if (options.hook) {
-        exitHookMode(fixedResults, VERSION, options.strict || (config.strict ?? false), config);
+        exitHookMode(fixedResults, VERSION, config);
       }
       const output = format(fixedResults, formatMode, VERSION);
       if (output) console.log(output);
@@ -73,7 +78,7 @@ program
     }
 
     if (options.hook) {
-      exitHookMode(results, VERSION, options.strict || (config.strict ?? false), config);
+      exitHookMode(results, VERSION, config);
     }
 
     const output = format(results, formatMode, VERSION);
@@ -119,7 +124,10 @@ program
       console.error('.promptocop.yml already exists');
       process.exit(1);
     }
-    const template = `extends:
+    const template = `# Set to false to disable promptocop without removing the hook
+enabled: true
+
+extends:
   - promptocop:recommended
 
 rules:
@@ -169,18 +177,11 @@ function hookLog(message: string): void {
   process.stderr.write(`[promptocop] ${message}\n`);
 }
 
-function exitHookMode(results: LintResult[], version: string, strict: boolean, config: PromptocopConfig): never {
-  const hasErrors = results.some((r) => !r.passed && r.severity === 'error');
+function exitHookMode(results: LintResult[], version: string, config: PromptocopConfig): never {
   const hasFailures = results.some((r) => !r.passed);
   const formatMode: FormatMode = config.context?.mode === 'compact' ? 'compact' : 'directive';
 
-  if (strict && hasErrors) {
-    const output = format(results, formatMode, version);
-    const errorCount = results.filter((r) => !r.passed && r.severity === 'error').length;
-    hookLog(`blocked — ${errorCount} error${errorCount !== 1 ? 's' : ''} (strict mode)`);
-    process.stderr.write(output + '\n');
-    process.exit(2);
-  } else if (hasFailures) {
+  if (hasFailures) {
     const text = format(results, formatMode, version);
     const errorCount = results.filter((r) => !r.passed && r.severity === 'error').length;
     const warnCount = results.filter((r) => !r.passed && r.severity === 'warn').length;

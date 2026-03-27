@@ -1,3 +1,6 @@
+# Set to false to disable promptocop without removing the hook
+enabled: true
+
 extends:
   - promptocop:recommended
 
@@ -10,9 +13,6 @@ rules:
   multi-task: error
   context-dump-risk: warn
   prefer-example: info
-
-# Uncomment to block prompts with errors when used as a Claude Code hook:
-# strict: true
 
 # Uncomment to add project-specific vague verbs:
 # options:

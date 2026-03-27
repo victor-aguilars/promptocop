@@ -48,35 +48,3 @@ describe('hook mode (default — non-blocking)', () => {
     expect(result.status).not.toBeNull();
   });
 });
-
-describe('hook mode with --strict', () => {
-  it('exits 2 and writes to stderr on errors', () => {
-    const result = runHook('fix it', ['--strict']);
-    expect(result.status).toBe(2);
-    expect(result.stderr).toContain('fix');
-    expect(result.stdout).toBe('');
-  });
-
-  it('exits 2 (not 1) — correct exit code for Claude Code blocking', () => {
-    const result = runHook('refactor everything', ['--strict']);
-    expect(result.status).toBe(2);
-    expect(result.status).not.toBe(1);
-  });
-
-  it('exits 0 with JSON additionalContext for warnings only', () => {
-    const result = runHook('Add logging to the auth service', ['--strict']);
-    expect(result.status).toBe(0);
-    if (result.stdout.trim()) {
-      const parsed = JSON.parse(result.stdout.trim()) as { additionalContext?: string };
-      expect(parsed).toHaveProperty('additionalContext');
-    }
-  });
-
-  it('exits 0 and does not block when rules only produce info/warn', () => {
-    const result = runHook(
-      'Add debug logging to src/auth.ts so that each failed login attempt logs the username and timestamp. Do not log passwords.',
-      ['--strict'],
-    );
-    expect(result.status).toBe(0);
-  });
-});

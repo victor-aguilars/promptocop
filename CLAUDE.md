@@ -1,6 +1,6 @@
 # promptocop
 
-A prompt linter for Claude Code. Catches bad prompt patterns before they reach the model — like ESLint, but for the things you type at Claude.
+A prompt linter for Claude Code. Analyzes your prompts for anti-patterns and surfaces issues as context for the model — like ESLint, but for the things you type at Claude.
 
 ---
 

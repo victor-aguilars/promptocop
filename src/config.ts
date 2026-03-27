@@ -6,6 +6,7 @@ import { recommended } from './presets/recommended.js';
 
 function deepMergeConfigs(base: PromptocopConfig, override: PromptocopConfig): PromptocopConfig {
   return {
+    enabled: override.enabled ?? base.enabled,
     rules: { ...base.rules, ...override.rules } as Record<string, Severity>,
     options: {
       ...base.options,
@@ -16,7 +17,6 @@ function deepMergeConfigs(base: PromptocopConfig, override: PromptocopConfig): P
         ]),
       ),
     },
-    strict: override.strict ?? base.strict,
     context: { ...base.context, ...override.context },
   };
 }
