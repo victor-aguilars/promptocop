@@ -1,6 +1,9 @@
 # Set to false to disable promptocop without removing the hook
 enabled: true
 
+# Set to true to suppress per-violation details from hook stderr output
+# silent: true
+
 extends:
   - promptocop:recommended
 
@@ -14,9 +17,11 @@ rules:
   context-dump-risk: warn
   prefer-example: info
 
-# Uncomment to add project-specific vague verbs:
 # options:
 #   no-vague-verb:
 #     additionalVerbs:
 #       - "touch"
 #       - "revisit"
+
+# context:
+#   mode: directive   # "directive" (default, actionable instructions for Claude) or "compact" (raw violation labels)

@@ -32,6 +32,7 @@ export interface ContextConfig {
 
 export interface PromptocopConfig {
   enabled?: boolean;
+  silent?: boolean;
   extends?: string[];
   rules?: Record<string, Severity>;
   options?: Record<string, Record<string, unknown>>;

@@ -1,15 +1,27 @@
 import { describe, it, expect } from 'vitest';
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
+import { writeFileSync, unlinkSync, existsSync } from 'node:fs';
 
 const CLI = join(import.meta.dirname, '../../dist/cli.js');
 
-function runHook(prompt: string, extraArgs: string[] = []) {
+function runHook(prompt: string, extraArgs: string[] = [], cwd?: string) {
   const input = JSON.stringify({ prompt });
   return spawnSync('node', [CLI, 'lint', '--hook', ...extraArgs, '-'], {
     input,
     encoding: 'utf8',
+    cwd,
   });
+}
+
+function withConfig(dir: string, yaml: string, fn: () => void) {
+  const path = join(dir, '.promptocop.yml');
+  writeFileSync(path, yaml, 'utf8');
+  try {
+    fn();
+  } finally {
+    if (existsSync(path)) unlinkSync(path);
+  }
 }
 
 describe('hook mode (default — non-blocking)', () => {
@@ -46,5 +58,22 @@ describe('hook mode (default — non-blocking)', () => {
     });
     expect(result.status).toBeDefined();
     expect(result.status).not.toBeNull();
+  });
+
+  it('prints per-violation details to stderr by default', () => {
+    const result = runHook('fix it');
+    // Should include the rule name in stderr
+    expect(result.stderr).toContain('no-vague-verb');
+  });
+
+  it('suppresses per-violation details when silent: true', () => {
+    const tmpDir = join(import.meta.dirname, '../../');
+    withConfig(tmpDir, 'silent: true\nextends:\n  - promptocop:recommended\n', () => {
+      const result = runHook('fix it', [], tmpDir);
+      // Summary line should still appear
+      expect(result.stderr).toContain('[promptocop]');
+      // But individual rule names should not
+      expect(result.stderr).not.toContain('no-vague-verb');
+    });
   });
 });

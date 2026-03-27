@@ -127,6 +127,9 @@ program
     const template = `# Set to false to disable promptocop without removing the hook
 enabled: true
 
+# Set to true to suppress per-violation details from hook stderr output
+# silent: true
+
 extends:
   - promptocop:recommended
 
@@ -189,6 +192,12 @@ function exitHookMode(results: LintResult[], version: string, config: Promptocop
     if (errorCount) parts.push(`${errorCount} error${errorCount !== 1 ? 's' : ''}`);
     if (warnCount) parts.push(`${warnCount} warning${warnCount !== 1 ? 's' : ''}`);
     hookLog(`${parts.join(', ')} — injected as context`);
+    if (!config.silent) {
+      for (const r of results.filter((r) => !r.passed)) {
+        const icon = r.severity === 'error' ? '✖' : r.severity === 'warn' ? '⚠' : 'ℹ';
+        hookLog(`  ${icon} ${r.rule}${r.message ? `: ${r.message}` : ''}`);
+      }
+    }
     process.stdout.write(JSON.stringify({ additionalContext: text }) + '\n');
     process.exit(0);
   } else {
