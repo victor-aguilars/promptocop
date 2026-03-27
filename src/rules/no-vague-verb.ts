@@ -87,7 +87,7 @@ const noVagueVerb: Rule = {
 
   directive(result): string {
     const verb = result.matched ?? 'the action verb';
-    return `The verb "${verb}" may be too vague without a specific target or goal.`;
+    return `Ask the user what specifically they want to "${verb}" — what file, function, or component, and what the end state should look like.`;
   },
 
   explain(): string {

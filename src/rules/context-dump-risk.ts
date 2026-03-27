@@ -59,7 +59,7 @@ const contextDumpRisk: Rule = {
   },
 
   directive(): string {
-    return 'The prompt contains a large amount of pasted context, which may dilute the core request.';
+    return 'Note to the user that the prompt contains a large amount of pasted context — ask them to highlight which parts are most relevant.';
   },
 
   explain(): string {

@@ -32,7 +32,7 @@ const noFileContext: Rule = {
   },
 
   directive(): string {
-    return 'No file path or module identifier was detected in the prompt.';
+    return 'Ask the user which file(s) or module(s) they are referring to.';
   },
 
   explain(): string {

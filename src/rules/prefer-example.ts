@@ -40,7 +40,7 @@ const preferExample: Rule = {
   },
 
   directive(): string {
-    return 'No concrete example (input/output pair, before/after snippet) was detected in the prompt.';
+    return 'Suggest to the user that providing a concrete example (input/output pair, before/after snippet) would help.';
   },
 
   explain(): string {

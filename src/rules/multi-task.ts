@@ -75,7 +75,7 @@ const multiTask: Rule = {
   },
 
   directive(): string {
-    return 'Multiple independent tasks were detected. Handling them sequentially may improve results.';
+    return 'Multiple tasks were detected. Ask the user which task to start with, or whether to handle them one at a time.';
   },
 
   explain(): string {
