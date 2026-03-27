@@ -30,17 +30,16 @@ describe('hook mode (default — non-blocking)', () => {
     expect(result.status).toBe(0);
   });
 
-  it('writes JSON additionalContext to stdout on violations', () => {
+  it('writes directive text to stdout on violations', () => {
     const result = runHook('fix it');
     expect(result.stdout.trim()).not.toBe('');
-    const parsed = JSON.parse(result.stdout.trim()) as { additionalContext?: string };
-    expect(parsed).toHaveProperty('additionalContext');
-    expect(parsed.additionalContext).toContain('fix');
+    expect(result.stdout).toContain('[promptocop]');
+    expect(result.stdout).toContain('fix');
   });
 
-  it('writes status to stderr', () => {
+  it('writes nothing to stderr', () => {
     const result = runHook('fix it');
-    expect(result.stderr).toContain('[promptocop]');
+    expect(result.stderr).toBe('');
   });
 
   it('exits 0 when rules only produce info/warn (never blocks)', () => {
@@ -60,20 +59,19 @@ describe('hook mode (default — non-blocking)', () => {
     expect(result.status).not.toBeNull();
   });
 
-  it('prints per-violation details to stderr by default', () => {
+  it('prints directive violation details to stdout by default', () => {
     const result = runHook('fix it');
-    // Should include the rule name in stderr
-    expect(result.stderr).toContain('no-vague-verb');
+    // Directive text includes the vague verb and [promptocop] preamble
+    expect(result.stdout).toContain('[promptocop]');
+    expect(result.stdout).toContain('fix');
   });
 
-  it('suppresses per-violation details when silent: true', () => {
+  it('suppresses output when silent: true', () => {
     const tmpDir = join(import.meta.dirname, '../../');
     withConfig(tmpDir, 'silent: true\nextends:\n  - promptocop:recommended\n', () => {
       const result = runHook('fix it', [], tmpDir);
-      // Summary line should still appear
-      expect(result.stderr).toContain('[promptocop]');
-      // But individual rule names should not
-      expect(result.stderr).not.toContain('no-vague-verb');
+      expect(result.status).toBe(0);
+      expect(result.stdout.trim()).toBe('');
     });
   });
 });

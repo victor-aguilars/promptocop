@@ -178,7 +178,7 @@ function exitHookMode(results: LintResult[], version: string, config: Promptocop
   const hasFailures = results.some((r) => !r.passed);
   const formatMode: FormatMode = config.context?.mode === 'compact' ? 'compact' : 'directive';
 
-  if (hasFailures) {
+  if (hasFailures && !config.silent) {
     const text = format(results, formatMode, version);
     process.stdout.write(text + '\n');
   }
