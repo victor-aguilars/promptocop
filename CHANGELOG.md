@@ -1,5 +1,11 @@
 # promptocop
 
+## 0.2.1
+
+### Patch Changes
+
+- 7c77a6e: Add skill generator
+
 ## 0.2.0
 
 ### Minor Changes
