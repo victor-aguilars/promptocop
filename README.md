@@ -39,6 +39,12 @@ npx promptocop skill uninstall
 npx promptocop skill uninstall --target cursor
 ```
 
+**Other editors:** If your editor supports agent skills but isn't listed above, print the `SKILL.md` to stdout and place it wherever your editor expects:
+
+```bash
+npx promptocop skill generate > /path/to/your/editor/skills/promptocop/SKILL.md
+```
+
 ### Option 2: Hook (shell-based)
 
 Adds an editor hook that runs `npx promptocop lint --hook -` before every prompt. Regex-based, fast, zero Claude tokens:

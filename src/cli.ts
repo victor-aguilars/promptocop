@@ -173,6 +173,14 @@ program
         const { uninstall } = await import('./skill/install.js');
         uninstall(options.project ? 'project' : 'personal', options.target as 'claude' | 'cursor');
       }),
+  )
+  .addCommand(
+    new Command('generate')
+      .description('Print the generated SKILL.md to stdout (for use with any editor)')
+      .action(async () => {
+        const { generateSkillContent } = await import('./skill/generate.js');
+        process.stdout.write(generateSkillContent());
+      }),
   );
 
 program
