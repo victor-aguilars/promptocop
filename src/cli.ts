@@ -15,7 +15,7 @@ const program = new Command();
 
 program
   .name('promptocop')
-  .description('A prompt linter for Claude Code')
+  .description('A prompt linter for Claude Code and Cursor')
   .version(VERSION);
 
 program
@@ -153,43 +153,55 @@ rules:
 
 program
   .command('skill')
-  .description('Manage Claude Code Agent Skill integration (AI-based, no shell required)')
+  .description('Manage Agent Skill integration (AI-based, no shell required)')
   .addCommand(
     new Command('install')
-      .description('Generate and install SKILL.md into ~/.claude/skills/promptocop/')
-      .option('--project', 'Install at project scope (.claude/skills/) instead of personal')
-      .action(async (options: { project?: boolean }) => {
+      .description('Generate and install SKILL.md into the editor skills directory')
+      .option('--project', 'Install at project scope instead of personal')
+      .option('--target <editor>', 'Target editor: claude, cursor', 'claude')
+      .action(async (options: { project?: boolean; target: string }) => {
         const { install } = await import('./skill/install.js');
-        install(options.project ? 'project' : 'personal');
+        install(options.project ? 'project' : 'personal', options.target as 'claude' | 'cursor');
       }),
   )
   .addCommand(
     new Command('uninstall')
       .description('Remove the promptocop SKILL.md')
       .option('--project', 'Uninstall from project scope instead of personal')
-      .action(async (options: { project?: boolean }) => {
+      .option('--target <editor>', 'Target editor: claude, cursor', 'claude')
+      .action(async (options: { project?: boolean; target: string }) => {
         const { uninstall } = await import('./skill/install.js');
-        uninstall(options.project ? 'project' : 'personal');
+        uninstall(options.project ? 'project' : 'personal', options.target as 'claude' | 'cursor');
+      }),
+  )
+  .addCommand(
+    new Command('generate')
+      .description('Print the generated SKILL.md to stdout (for use with any editor)')
+      .action(async () => {
+        const { generateSkillContent } = await import('./skill/generate.js');
+        process.stdout.write(generateSkillContent());
       }),
   );
 
 program
   .command('hook')
-  .description('Manage Claude Code hook integration')
+  .description('Manage editor hook integration')
   .addCommand(
     new Command('install')
-      .description('Install the promptocop hook into ~/.claude/settings.json')
-      .action(async () => {
+      .description('Install the promptocop hook (use --target to select editor)')
+      .option('--target <editor>', 'Target editor: claude, cursor', 'claude')
+      .action(async (options: { target: string }) => {
         const { install } = await import('./hook/install.js');
-        install();
+        install(options.target);
       }),
   )
   .addCommand(
     new Command('uninstall')
-      .description('Remove the promptocop hook from ~/.claude/settings.json')
-      .action(async () => {
+      .description('Remove the promptocop hook (use --target to select editor)')
+      .option('--target <editor>', 'Target editor: claude, cursor', 'claude')
+      .action(async (options: { target: string }) => {
         const { uninstall } = await import('./hook/install.js');
-        uninstall();
+        uninstall(options.target);
       }),
   );
 

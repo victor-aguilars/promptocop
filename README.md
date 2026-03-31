@@ -5,46 +5,65 @@
   </picture>
 </div>
 
-A prompt linter for Claude Code. Analyzes your prompts for anti-patterns and surfaces issues as context for the model — like ESLint, but for the things you type.
+A prompt linter for Claude Code and Cursor. Analyzes your prompts for anti-patterns and surfaces issues as context for the model — like ESLint, but for the things you type.
 
 ---
 
-## Setup with Claude Code
+## Setup
 
 There are two integration modes. Pick one — or use both.
 
 ### Option 1: Agent Skill (recommended)
 
-Installs a `SKILL.md` that Claude loads automatically. Claude applies the rules using its own reasoning — no shell execution, no `npx` on every prompt:
+Installs a `SKILL.md` that Claude Code and Cursor load automatically. The editor applies the rules using its own reasoning — no shell execution, no `npx` on every prompt:
 
 ```bash
+# Claude Code (default)
 npx promptocop skill install
+
+# Cursor
+npx promptocop skill install --target cursor
 ```
 
-This writes `~/.claude/skills/promptocop/SKILL.md`. Claude Code picks it up immediately. To install at project scope instead (`.claude/skills/`):
+This writes a `SKILL.md` to your editor's skills directory. Your editor picks it up immediately. To install at project scope instead:
 
 ```bash
 npx promptocop skill install --project
+npx promptocop skill install --target cursor --project
 ```
 
 To remove:
 
 ```bash
 npx promptocop skill uninstall
+npx promptocop skill uninstall --target cursor
+```
+
+**Other editors:** If your editor supports agent skills but isn't listed above, print the `SKILL.md` to stdout and place it wherever your editor expects:
+
+```bash
+npx promptocop skill generate > /path/to/your/editor/skills/promptocop/SKILL.md
 ```
 
 ### Option 2: Hook (shell-based)
 
-Adds a `UserPromptSubmit` hook to `~/.claude/settings.json` that runs `npx promptocop lint --hook -` before every prompt. Regex-based, fast, zero Claude tokens:
+Adds an editor hook that runs `npx promptocop lint --hook -` before every prompt. Regex-based, fast, zero Claude tokens:
 
 ```bash
+# Claude Code (default)
 npx promptocop hook install
+
+# Cursor
+npx promptocop hook install --target cursor
 ```
+
+For Claude Code this adds a `UserPromptSubmit` hook to `~/.claude/settings.json`. For Cursor it adds a `beforeSubmitPrompt` hook to `~/.cursor/hooks.json`. When a prompt has issues, the lint results are injected as context so the model can factor them into its response — nothing is blocked by default.
 
 To remove:
 
 ```bash
 npx promptocop hook uninstall
+npx promptocop hook uninstall --target cursor
 ```
 
 > Both can coexist, but running both on every prompt is redundant. The skill is the simpler default; use the hook if you want deterministic regex-based linting independent of Claude's reasoning.

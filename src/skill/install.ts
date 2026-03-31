@@ -6,15 +6,20 @@ import { generateSkillContent } from './generate.js';
 const SKILL_DIR_NAME = 'promptocop';
 const SKILL_FILE_NAME = 'SKILL.md';
 
-function skillPath(scope: 'personal' | 'project'): string {
+function editorDir(target: 'claude' | 'cursor'): string {
+  return target === 'cursor' ? '.cursor' : '.claude';
+}
+
+function skillPath(scope: 'personal' | 'project', target: 'claude' | 'cursor'): string {
+  const dir = editorDir(target);
   const base = scope === 'project'
-    ? join(process.cwd(), '.claude', 'skills')
-    : join(homedir(), '.claude', 'skills');
+    ? join(process.cwd(), dir, 'skills')
+    : join(homedir(), dir, 'skills');
   return join(base, SKILL_DIR_NAME, SKILL_FILE_NAME);
 }
 
-export function install(scope: 'personal' | 'project' = 'personal'): void {
-  const path = skillPath(scope);
+export function install(scope: 'personal' | 'project' = 'personal', target: 'claude' | 'cursor' = 'claude'): void {
+  const path = skillPath(scope, target);
 
   if (existsSync(path)) {
     console.log(`promptocop skill is already installed at ${path}`);
@@ -25,12 +30,12 @@ export function install(scope: 'personal' | 'project' = 'personal'): void {
   writeFileSync(path, generateSkillContent(), 'utf8');
 
   console.log(`promptocop skill installed at ${path}`);
-  console.log('Claude will now review prompts using AI reasoning — no shell execution required.');
+  console.log('Your editor will now review prompts using AI reasoning — no shell execution required.');
   console.log('Note: if the promptocop hook is also installed, both will run. Use `promptocop hook uninstall` to remove the shell hook.');
 }
 
-export function uninstall(scope: 'personal' | 'project' = 'personal'): void {
-  const path = skillPath(scope);
+export function uninstall(scope: 'personal' | 'project' = 'personal', target: 'claude' | 'cursor' = 'claude'): void {
+  const path = skillPath(scope, target);
 
   if (!existsSync(path)) {
     console.log('promptocop skill is not installed.');
