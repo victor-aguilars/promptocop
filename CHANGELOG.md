@@ -1,5 +1,12 @@
 # promptocop
 
+## 0.2.1
+
+### Patch Changes
+
+- 4c8c0e2: Support cursor hooks
+- 7c77a6e: Add skill generator
+
 ## 0.2.0
 
 ### Minor Changes
