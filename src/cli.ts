@@ -152,6 +152,28 @@ rules:
   });
 
 program
+  .command('skill')
+  .description('Manage Claude Code Agent Skill integration (AI-based, no shell required)')
+  .addCommand(
+    new Command('install')
+      .description('Generate and install SKILL.md into ~/.claude/skills/promptocop/')
+      .option('--project', 'Install at project scope (.claude/skills/) instead of personal')
+      .action(async (options: { project?: boolean }) => {
+        const { install } = await import('./skill/install.js');
+        install(options.project ? 'project' : 'personal');
+      }),
+  )
+  .addCommand(
+    new Command('uninstall')
+      .description('Remove the promptocop SKILL.md')
+      .option('--project', 'Uninstall from project scope instead of personal')
+      .action(async (options: { project?: boolean }) => {
+        const { uninstall } = await import('./skill/install.js');
+        uninstall(options.project ? 'project' : 'personal');
+      }),
+  );
+
+program
   .command('hook')
   .description('Manage Claude Code hook integration')
   .addCommand(
