@@ -15,7 +15,7 @@ const program = new Command();
 
 program
   .name('promptocop')
-  .description('A prompt linter for Claude Code')
+  .description('A prompt linter for Claude Code and Cursor')
   .version(VERSION);
 
 program
@@ -150,6 +150,30 @@ rules:
     writeFileSync('.promptocop.yml', template, 'utf8');
     console.log('Created .promptocop.yml');
   });
+
+program
+  .command('skill')
+  .description('Manage Agent Skill integration (AI-based, no shell required)')
+  .addCommand(
+    new Command('install')
+      .description('Generate and install SKILL.md into the editor skills directory')
+      .option('--project', 'Install at project scope instead of personal')
+      .option('--target <editor>', 'Target editor: claude, cursor', 'claude')
+      .action(async (options: { project?: boolean; target: string }) => {
+        const { install } = await import('./skill/install.js');
+        install(options.project ? 'project' : 'personal', options.target as 'claude' | 'cursor');
+      }),
+  )
+  .addCommand(
+    new Command('uninstall')
+      .description('Remove the promptocop SKILL.md')
+      .option('--project', 'Uninstall from project scope instead of personal')
+      .option('--target <editor>', 'Target editor: claude, cursor', 'claude')
+      .action(async (options: { project?: boolean; target: string }) => {
+        const { uninstall } = await import('./skill/install.js');
+        uninstall(options.project ? 'project' : 'personal', options.target as 'claude' | 'cursor');
+      }),
+  );
 
 program
   .command('hook')

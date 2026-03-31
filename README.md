@@ -11,7 +11,37 @@ A prompt linter for Claude Code and Cursor. Analyzes your prompts for anti-patte
 
 ## Setup
 
-Install the hook and every prompt you send gets linted automatically:
+There are two integration modes. Pick one — or use both.
+
+### Option 1: Agent Skill (recommended)
+
+Installs a `SKILL.md` that Claude Code and Cursor load automatically. The editor applies the rules using its own reasoning — no shell execution, no `npx` on every prompt:
+
+```bash
+# Claude Code (default)
+npx promptocop skill install
+
+# Cursor
+npx promptocop skill install --target cursor
+```
+
+This writes a `SKILL.md` to your editor's skills directory. Your editor picks it up immediately. To install at project scope instead:
+
+```bash
+npx promptocop skill install --project
+npx promptocop skill install --target cursor --project
+```
+
+To remove:
+
+```bash
+npx promptocop skill uninstall
+npx promptocop skill uninstall --target cursor
+```
+
+### Option 2: Hook (shell-based)
+
+Adds an editor hook that runs `npx promptocop lint --hook -` before every prompt. Regex-based, fast, zero Claude tokens:
 
 ```bash
 # Claude Code (default)
@@ -30,27 +60,30 @@ npx promptocop hook uninstall
 npx promptocop hook uninstall --target cursor
 ```
 
+> Both can coexist, but running both on every prompt is redundant. The skill is the simpler default; use the hook if you want deterministic regex-based linting independent of Claude's reasoning.
+
 ### How it works
 
 Violations are surfaced as advisory metadata alongside your prompt. Claude sees the findings and decides what to act on based on conversation context:
 
 ```
-[promptocop] The user's prompt was flagged by a prompt linter. Below are
-potential gaps — if any are not already resolved by conversation context,
-factor them into your response.
+[promptocop] The user's prompt is missing critical information. DO NOT guess
+or investigate autonomously — ask the user to clarify the items marked MUST
+below before proceeding.
 
-Likely to cause problems without clarification (ask the user if unclear):
-- The verb "fix" may be too vague without a specific target or goal.
+MUST clarify before acting:
+- Ask the user what specifically they want to "fix" — what file, function, or
+  component, and what the end state should look like.
 
-May reduce response quality (mention if relevant):
-- No file path or module identifier was detected in the prompt.
+Mention to the user if not obvious from context:
+- No file or code reference found — ask which file or component to focus on.
 ```
 
 | Severity | Behavior |
 |---|---|
-| `error` | Ask the user to clarify if not already clear from conversation |
-| `warn` | Mention gaps if relevant to the response |
-| `info` | Suggest improvements the user could consider |
+| `error` | Claude stops and asks for clarification before proceeding |
+| `warn` | Claude mentions gaps if relevant to the response |
+| `info` | Claude suggests improvements the user could consider |
 
 ---
 
