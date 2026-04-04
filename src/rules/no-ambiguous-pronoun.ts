@@ -35,6 +35,18 @@ function isPronounDeterminer(text: string, pronounMatch: RegExpExecArray): boole
 const VERB_PRONOUN_PATTERN = buildVerbPronounPattern();
 const PRONOUN_PATTERN = new RegExp(`\\b(${PRONOUNS.join('|')})\\b`, 'gi');
 
+// A "concrete referent" is a named entity that "it" can clearly refer to.
+// If one exists anywhere in the prompt, "it" is likely not ambiguous.
+function hasConcreteReferent(prompt: string): boolean {
+  // Backtick-quoted identifier
+  if (/`[^`]+`/.test(prompt)) return true;
+  // File path with extension (e.g. src/auth.ts, ./config.json)
+  if (/\b\w[\w/.-]*\.[a-zA-Z]{1,6}\b/.test(prompt)) return true;
+  // camelCase identifier (lowercase start, uppercase somewhere inside)
+  if (/\b[a-z][a-zA-Z0-9]*[A-Z][a-zA-Z0-9]*\b/.test(prompt)) return true;
+  return false;
+}
+
 function splitSentences(prompt: string): string[] {
   return prompt
     .split(/(?<=[.!?\n])/)
@@ -61,6 +73,10 @@ const noAmbiguousPronoun: Rule = {
 
         if (pronounMatch) {
           const pronounLower = pronounMatch[0].toLowerCase();
+          // "it" with a concrete referent in the prompt is considered unambiguous
+          if (pronounLower === 'it' && hasConcreteReferent(prompt)) {
+            continue;
+          }
           // "it" can never be a determiner; only "this/that/these/those" can
           if (pronounLower !== 'it') {
             const pronounStart = sentence.indexOf(match[0]) + match[0].lastIndexOf(pronounMatch[0]);

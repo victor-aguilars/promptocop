@@ -1,14 +1,20 @@
 import type { Rule, RuleResult } from '../types.js';
 
-// Conjunctions and transitions that commonly separate independent tasks
+// Imperative verbs that indicate a new task (shared with sentence check below)
+const IMPERATIVE_VERBS_LIST =
+  'add|create|write|build|fix|update|change|remove|delete|refactor|move|rename|implement|deploy|run|test|check|verify|ensure|make|generate|install|configure|set(?:\\s+up)?|enable|disable|expose|hide';
+
+// Conjunctions and transitions that commonly separate independent tasks.
+// Generic connectors (also, then, plus) only flag when followed by an imperative
+// verb — otherwise they appear too often in single-task descriptive context.
 const TASK_SEPARATOR_PATTERNS = [
   /\band (also|then|additionally|furthermore)\b/i,
-  /\bthen\s+(also\s+)?(?=[a-z])/i,
+  new RegExp(`\\bthen\\s+(?:also\\s+)?(${IMPERATIVE_VERBS_LIST})\\b`, 'i'),
   /\bafter (that|which|doing that)\b/i,
   /\badditionally\b/i,
   /\bfurthermore\b/i,
-  /\balso\b/i,
-  /\bplus\b/i,
+  new RegExp(`\\balso\\s+(${IMPERATIVE_VERBS_LIST})\\b`, 'i'),
+  new RegExp(`\\bplus\\s+(${IMPERATIVE_VERBS_LIST})\\b`, 'i'),
   /\bon top of that\b/i,
 ];
 

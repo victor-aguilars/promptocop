@@ -52,4 +52,16 @@ describe('no-ambiguous-pronoun', () => {
     const msg = noAmbiguousPronoun.directive!(result);
     expect(msg).toContain('"it"');
   });
+
+  it('does not flag "it" when a camelCase referent is present', () => {
+    expect(noAmbiguousPronoun.check('Update validateToken to use async/await. Fix it.').passed).toBe(true);
+  });
+
+  it('does not flag "it" when a file path referent is present', () => {
+    expect(noAmbiguousPronoun.check('There is a bug in src/auth.ts. Fix it.').passed).toBe(true);
+  });
+
+  it('does not flag "it" when a backtick identifier is present', () => {
+    expect(noAmbiguousPronoun.check('The `getUser` function is broken. Fix it.').passed).toBe(true);
+  });
 });

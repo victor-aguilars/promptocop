@@ -23,13 +23,19 @@ describe('no-constraints', () => {
     expect(noConstraints.check('limit the results to at most 10 items').passed).toBe(true);
   });
 
-  it('passes with bullet list', () => {
+  it('passes with bullet list containing quantity constraints', () => {
+    // "max" is a quantity constraint — the list structure itself is not what passes
     const prompt = 'Add caching:\n- Max 100 entries\n- TTL 5 minutes';
     expect(noConstraints.check(prompt).passed).toBe(true);
   });
 
-  it('passes with numbered list', () => {
+  it('passes with numbered list containing quantity constraints', () => {
     const prompt = 'Add caching:\n1. Max 100 entries\n2. TTL 5 minutes';
     expect(noConstraints.check(prompt).passed).toBe(true);
+  });
+
+  it('flags a bulleted list of features with no constraint language', () => {
+    const prompt = 'Add a dashboard:\n- Users list\n- Analytics chart\n- Export button';
+    expect(noConstraints.check(prompt).passed).toBe(false);
   });
 });

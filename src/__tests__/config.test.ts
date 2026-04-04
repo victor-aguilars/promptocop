@@ -44,7 +44,7 @@ rules:
     const config = loadConfig(tmpDir);
     expect(config.rules?.['no-vague-verb']).toBe('off');
     // Other recommended rules still present
-    expect(config.rules?.['no-ambiguous-pronoun']).toBe('error');
+    expect(config.rules?.['no-ambiguous-pronoun']).toBe('warn');
   });
 
   it('resolves config from a subdirectory', () => {

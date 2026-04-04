@@ -5,13 +5,8 @@ const CONSTRAINT_PATTERNS = [
   /\b(must|should|shall|need to|have to|required to|only|avoid|don'?t|do not|never|always)\b/i,
   // Quantity constraints
   /\b(at most|at least|no more than|no less than|limit(ed)? to|maximum|minimum|max|min)\b/i,
-  // Boundary words
-  /\b(within|without|except|unless|until|before|after|instead of|rather than)\b/i,
   // Requirement markers
   /\b(constraint|requirement|restriction|rule|policy)\b/i,
-  // Bullet/numbered list (often encodes constraints)
-  /^[-*•]\s+/m,
-  /^\d+\.\s+/m,
 ];
 
 const noConstraints: Rule = {

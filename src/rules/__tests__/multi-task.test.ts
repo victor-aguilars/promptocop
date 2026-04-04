@@ -15,8 +15,20 @@ describe('multi-task', () => {
     expect(multiTask.check('fix the auth bug. Additionally, update the tests.').passed).toBe(false);
   });
 
-  it('flags "then" connector', () => {
+  it('flags "then" followed by an imperative verb', () => {
     expect(multiTask.check('fix the auth bug then deploy it').passed).toBe(false);
+  });
+
+  it('does not flag "then" without an imperative verb', () => {
+    expect(multiTask.check('warm the cache, then invalidated after TTL').passed).toBe(true);
+  });
+
+  it('does not flag "also" used as a requirement, not a new task', () => {
+    expect(multiTask.check('Add a search bar. Also, the results should be paginated.').passed).toBe(true);
+  });
+
+  it('flags "also" followed by an imperative verb', () => {
+    expect(multiTask.check('Add error handling and also update the tests.').passed).toBe(false);
   });
 
   it('flags 3+ imperative sentences', () => {
