@@ -103,18 +103,20 @@ interface RuleResult {
 | `info` | Style or efficiency suggestion. |
 | `off` | Rule disabled. |
 
-### Implemented rules (v1)
+### Implemented rules
 
 | Rule | Severity | Auto-fix |
 |------|----------|----------|
 | `no-vague-verb` | error | Yes — prompts for specific replacement |
-| `no-ambiguous-pronoun` | error | No |
 | `missing-success-criteria` | error | No |
-| `no-file-context` | warn | No |
-| `no-constraints` | warn | No |
 | `multi-task` | error | Yes — splits into numbered sub-tasks |
+| `no-ambiguous-pronoun` | warn | No |
+| `no-question-for-action` | warn | Yes — removes indirect prefix, capitalizes |
+| `no-file-context` | warn | No |
 | `context-dump-risk` | warn | No |
+| `no-constraints` | info | No |
 | `prefer-example` | info | No |
+| `prefer-positive-instruction` | info | No |
 
 ### Vague verbs list (seed list, extend over time)
 
@@ -124,7 +126,15 @@ A vague verb violation is triggered when one of these appears without a qualifyi
 
 ### Ambiguous pronouns
 
-Triggered when `it`, `this`, `that`, `these`, `those` appear as the direct object of an action verb with no clear referent in the same sentence.
+Triggered when `it`, `this`, `that`, `these`, `those` appear as the direct object of an action verb with no clear referent in the prompt. For `it` specifically, the rule passes if a concrete referent is present anywhere in the prompt (camelCase identifier, file path, or backtick-quoted name).
+
+### Indirect phrasing (`no-question-for-action`)
+
+Triggered when a prompt starts with `can you / could you / would you / will you` followed by an action verb. Information verbs (`explain`, `describe`, `summarize`, etc.) are excluded — only action requests are flagged.
+
+### Negative format instructions (`prefer-positive-instruction`)
+
+Triggered on formatting negations like `don't use markdown`, `no bullet points`, `avoid headers`. Scoped to formatting keywords only — general constraints like `don't use jQuery` are not flagged.
 
 ---
 
@@ -416,7 +426,7 @@ promptocop lint "refactor the auth module" --ai
 - [x] Project scaffold (package.json, tsconfig, vitest config)
 - [x] Core rule interface and linter runner
 - [x] Config loader
-- [x] All v1 rules (8 rules)
+- [x] All v1 rules (10 rules)
 - [x] CLI entry point with all commands (`lint`, `explain`, `rules`, `init`, `hook`, `skill`)
 - [x] Default + compact + JSON + directive formatters
 - [x] `--fix` mode

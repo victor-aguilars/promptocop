@@ -1,10 +1,12 @@
 import type { Rule, RuleResult } from '../types.js';
 import { rules } from '../rules/index.js';
+import { recommended } from '../presets/recommended.js';
 
 // Representative matched values for rules whose directive() interpolates result.matched
 const SAMPLE_RESULTS: Partial<Record<string, RuleResult>> = {
   'no-vague-verb': { passed: false, matched: 'fix' },
   'no-ambiguous-pronoun': { passed: false, matched: 'it' },
+  'no-question-for-action': { passed: false, matched: 'Can you' },
 };
 
 function sampleResult(rule: Rule): RuleResult {
@@ -14,10 +16,12 @@ function sampleResult(rule: Rule): RuleResult {
 function buildRuleTable(): string {
   const header = '| severity | rule | trigger condition | directive |\n|----------|------|-------------------|-----------|';
   const rows = rules.map((rule) => {
+    // Use the recommended preset severity so the skill reflects actual defaults
+    const severity = (recommended.rules?.[rule.name] as string | undefined) ?? rule.severity;
     const directive = rule.directive ? rule.directive(sampleResult(rule)) : rule.description;
     // Escape pipe chars in cells so the table stays valid
     const clean = (s: string) => s.replace(/\|/g, '\\|').replace(/\n/g, ' ');
-    return `| ${rule.severity} | ${rule.name} | ${clean(rule.description)} | ${clean(directive)} |`;
+    return `| ${severity} | ${rule.name} | ${clean(rule.description)} | ${clean(directive)} |`;
   });
   return [header, ...rows].join('\n');
 }
@@ -25,7 +29,7 @@ function buildRuleTable(): string {
 export function generateSkillContent(): string {
   const frontmatter = `---
 name: promptocop
-description: Review every user prompt before acting. Detects anti-patterns: vague verbs (fix, improve, update, refactor, clean up, optimize), ambiguous pronouns (it, this, that) without clear referent, missing success criteria, multi-task requests, missing file context, missing constraints. Trigger on any actionable user request.
+description: Review every user prompt before acting. Detects anti-patterns: vague verbs (fix, improve, update, refactor, clean up, optimize), ambiguous pronouns (it, this, that) without clear referent, missing success criteria, multi-task requests, missing file context, missing constraints, indirect phrasing (can you / could you), negative format instructions (don't use markdown). Trigger on any actionable user request.
 user-invocable: false
 ---`;
 

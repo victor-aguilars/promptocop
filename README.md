@@ -107,15 +107,17 @@ npx promptocop lint "refactor the auth module"
 promptocop v0.2.0
 
 ✖ error   no-vague-verb                "refactor" needs a target, pattern, or goal
-⚠ warning no-constraints               No constraints specified — consider adding limits, requirements, or restrictions
 ✓ pass   no-ambiguous-pronoun
 ✓ pass   missing-success-criteria
 ✓ pass   multi-task
 ✓ pass   no-file-context
 ✓ pass   context-dump-risk
+ℹ info    no-constraints               No constraints specified — consider adding limits, requirements, or restrictions
 ✓ pass   prefer-example
+✓ pass   no-question-for-action
+✓ pass   prefer-positive-instruction
 
-1 error, 1 warning — run with --fix to attempt auto-fix
+1 error, 1 info — run with --fix to attempt auto-fix
 ```
 
 ```bash
@@ -142,13 +144,15 @@ promptocop explain no-vague-verb
 | Rule | Severity | Auto-fix | What it catches |
 |------|----------|----------|-----------------|
 | `no-vague-verb` | error | yes | Vague verbs like "fix", "refactor", "improve" without a target or goal |
-| `no-ambiguous-pronoun` | error | no | "it", "this", "that" as verb objects with no clear referent |
 | `missing-success-criteria` | error | no | No definition of done — "so that", "should return", "verify that", etc. |
 | `multi-task` | error | yes | Multiple independent tasks crammed into one prompt |
+| `no-ambiguous-pronoun` | warn | no | "it", "this", "that" as verb objects with no clear referent in the prompt |
+| `no-question-for-action` | warn | yes | Indirect phrasing like "Can you fix X?" — rephrase as "Fix X" |
 | `no-file-context` | warn | no | No file path, module, or code reference to narrow scope |
-| `no-constraints` | warn | no | No constraints, limits, or requirements |
 | `context-dump-risk` | warn | no | Pasted logs, large code blocks, or excessively long prompts |
+| `no-constraints` | info | no | No constraints, limits, or requirements stated |
 | `prefer-example` | info | no | Long prompts with no example to illustrate the goal |
+| `prefer-positive-instruction` | info | no | Negative format instructions like "don't use markdown" |
 
 Run `promptocop explain <rule>` for details on any rule.
 
