@@ -104,7 +104,7 @@ npx promptocop lint "refactor the auth module"
 **Example output:**
 
 ```
-promptocop v0.2.0
+promptocop v1.0.0
 
 ✖ error   no-vague-verb                "refactor" needs a target, pattern, or goal
 ✓ pass   no-ambiguous-pronoun

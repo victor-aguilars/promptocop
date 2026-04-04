@@ -1,5 +1,11 @@
 # promptocop
 
+## 1.0.0
+
+### Major Changes
+
+- fca1b4b: Releasing first major version with ten rules and skill generator
+
 ## 0.2.1
 
 ### Patch Changes
